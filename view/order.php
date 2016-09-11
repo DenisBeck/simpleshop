@@ -7,7 +7,7 @@
 </head>
 <body>
 	<h1>Оформление заказа</h1>
-	<form action="saveorder.php" method="post">
+	<form action="../controller/saveorder.php" method="post">
 		<div class="form-group">
 			<label for="inputName" class="control-label col-lg-2">Заказчик</label>
 			<div class="col-lg-10">
