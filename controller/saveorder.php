@@ -20,7 +20,6 @@ if($strOrder) {
 	header("Location: ../view/order.php");
 	exit;
 }
-;
 
 ?>
 <!DOCTYPE html>

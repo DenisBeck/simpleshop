@@ -3,13 +3,6 @@ require '../model/lib.php';
 require '../model/config.php';
 
 $goods = getBasket();
-/*if(!is_array($goods)) {
-	echo 'Произошла ошибка при выводе товаров';
-}
-if(!$goods) {
-	echo 'На сегодня товаров нет';
-	exit;
-}*/
 
 $i = 1;
 $sum = 0;
@@ -53,7 +46,13 @@ $sum = 0;
 			<td><?= $item['country']?></td>
 			<td><?= $item['releaseyear']?></td>
 			<td><?= $item['price']?></td>
-			<td><?= $item['quantity']?></td>
+			<td>
+				<form method="get" action="../controller/savebasket.php">
+					<input type="number" min="1" max="<?= $item['store quantity']?>" name="quantity" value="<?= $item['quantity']?>">
+					<input type="hidden" name="id" value="<?=$item['id']?>">
+					<input class="btn btn-primary" type="submit" value="Пересчитать">
+				</form>
+			</td>
 			<td><?= $item['price'] * $item['quantity']?></td>
 			<td><a href="../controller/delbasket.php?id=<?=$item['id']?>">Удалить</a></td>
 		</tr>

@@ -8,9 +8,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$country = clearData($_POST['country'], 'string');
 	$releaseyear = clearData($_POST['releaseyear'], 'int');
 	$price = clearData($_POST['price'], 'int');
+	$storeQuantity = clearData($_POST['storeQuantity'], 'int');
 }
 
-if(!addToCatalog($title, $genre, $country, $releaseyear, $price)) {
+if(!addToCatalog($title, $genre, $country, $releaseyear, $price, $storeQuantity)) {
 	echo 'Произошла ошибка при добавлении товара в каталог';
 } else {
 	header("Location: ../view/catalog.php");

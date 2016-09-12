@@ -3,14 +3,16 @@
 /*\\\\\\\\\\\\\\\\Работа с базой данных////////////////*/
 
 //Добавление товара в базу данных
-function addToCatalog($title, $genre, $country, $releaseyear, $price) {
+function addToCatalog($title, $genre, $country, $releaseyear, $price, $storeQuantity) {
 	global $link;
-	$sql = "INSERT INTO catalog (title, genre, country, releaseyear, price) 
-			VALUES (?, ?, ?, ?, ?)";
+	$sql = "INSERT INTO catalog (title, genre, country, releaseyear, price, `store quantity`) 
+			VALUES (?, ?, ?, ?, ?, ?)";
 	$stmt = mysqli_prepare($link, $sql);
-	if(!$stmt) 
+	if(!$stmt) {
+		echo 'здесь был';
 		return false;
-	mysqli_stmt_bind_param($stmt, 'sssii', $title, $genre, $country, $releaseyear, $price);
+	}
+	mysqli_stmt_bind_param($stmt, 'sssiii', $title, $genre, $country, $releaseyear, $price, $storeQuantity);
 	mysqli_execute($stmt);
 	mysqli_stmt_close($stmt);
 	return true;
@@ -46,14 +48,16 @@ function addToOrders($datetime) {
 		
 	mysqli_stmt_close($stmt);
 	setcookie('basket', '', time() - 3600, '/');
+
 	return true;
 }
 
 //Выборка каталога из базы данных
-function selectInCatalog() {
+function selectInCatalog($title="") {
 	global $link;
-	$sql = "SELECT id, title, genre, country, releaseyear, price 
-			FROM catalog";
+	$title .= "%";
+	$sql = "SELECT id, title, genre, country, releaseyear, price, `store quantity`  
+			FROM catalog WHERE title LIKE '{$title}'";
 	$result = mysqli_query($link, $sql);
 	if(!$result)
 		return false;
@@ -97,6 +101,36 @@ function getOrders($dirToFile) {
 	return $allorders;
 }
 
+//Изменения в записях
+function changeStoreQuantity($id, $value) {
+	global $link;
+	$sql = "UPDATE catalog SET `store quantity`='{$value}' WHERE `id`='{$id}'";
+	if(!mysqli_query($link, $sql)) {
+		return false;
+	}
+	mysqli_close($link);
+	return true;
+}
+
+function getOvercount() {
+	global $link;
+	$data = selectInCatalog();
+	$totals = [];
+	foreach($data as $item) {
+		$id = $item['id'];
+		$quantity = $item['store quantity'];
+		$totals[$id] = $quantity;
+	}
+	return $totals;
+}
+function updateCount($id, $value=0) {
+	global $basket;
+	$totals = $basket['totals'];
+	$value = clearData($totals[$id], 'int') - $value;
+	changeStoreQuantity($id, $value);
+
+}
+
 /*\\\\\\\\\\\\\\\\Работа с базой данных////////////////*/
 
 /*\\\\\\\\\\\\\\\\Работа с корзиной заказов////////////////*/
@@ -105,10 +139,11 @@ function initBasket() {
 	global $basket, $count;
 	if(!isset($_COOKIE['basket'])) {
 		$basket['orderid'] = uniqid(); 
+		$basket['totals'] = getOvercount();
 		saveBasket();
 	} else {
 		$basket = unserialize(base64_decode($_COOKIE['basket']));
-		$count = count($basket) - 1;
+		$count = count($basket) - 2;
 	}
 }
 
@@ -119,20 +154,24 @@ function saveBasket() {
 }
 
 function addToBasket($id, $q) {
-	global $basket;
+	global $basket, $link;
 	$basket[$id] = $q;
 	saveBasket();
 }
 
 function getBasket() {
 	global $link, $basket;
-	$goods = array_keys($basket);
-	array_shift($goods);
+	if(is_array($basket)){
+		$goods = array_keys($basket);
+		array_shift($goods);
+		array_shift($goods);
+	}
 	if(!$goods) {
+		echo 'был здесь';
 		return false;
 	}
 	$ids = implode(',', $goods);
-	$sql = "SELECT id, title, genre, country, releaseyear, price
+	$sql = "SELECT id, title, genre, country, releaseyear, price, `store quantity`
 			FROM catalog WHERE id IN ($ids)";
 	if(!$result = mysqli_query($link, $sql)) {
 		return false;

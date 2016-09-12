@@ -4,6 +4,7 @@ require '../model/config.php';
 
 if(isset($_GET['id']) and $_SERVER['REQUEST_METHOD'] == 'GET') {
 	$id = clearData($_GET['id'], 'int');
+	updateCount($id);
 	delFromBasket($id);
 
 	header("Location: ../view/basket.php");

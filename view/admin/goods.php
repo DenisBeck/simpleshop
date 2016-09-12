@@ -39,6 +39,12 @@
 			</div>
 		</div>
 		<div class="form-group">
+			<label for="inputStoreQuantity" class="control-label col-lg-2">Количество на складе</label>
+			<div class="col-lg-10">
+				<input name="storeQuantity" type="text" class="form-control" id="inputStoreQuantity" placeholder="Количество на складе">
+			</div>
+		</div>
+		<div class="form-group">
 			<div class="col-lg-offset-2 col-lg-10">
 				<input type="submit" class="btn btn-primary" value="Добавить">
 			</div>
