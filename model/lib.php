@@ -167,7 +167,6 @@ function getBasket() {
 		array_shift($goods);
 	}
 	if(!$goods) {
-		echo 'был здесь';
 		return false;
 	}
 	$ids = implode(',', $goods);
