@@ -64,7 +64,8 @@ $sum = 0;
 	</table>
 	<p class="panel">Приобретено товара всего на сумму: <?=$sum?> руб.</p>
 	<p class="text-center">
-		<a href="order.php" class="btn btn-primary">Оформить заказ</a>
+		<a href="<?=$_SESSION['user'] ? '../controller/saveorder.php' : 'registration.php'?>" class="btn btn-primary">Оформить заказ зарегистрированному пользователю</a>
+		<a href="order.php" class="btn btn-primary">Оформить заказ без регистрации</a>
 	</p>
 		
 </body>

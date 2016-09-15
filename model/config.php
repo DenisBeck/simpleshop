@@ -1,5 +1,6 @@
 <?php
 	header('Content-type: text/html;charset=utf-8');
+	session_start();
 	//константы для подключения к базе данных
 	define('DB_HOST', 'localhost');
 	define('DB_LOGIN', 'root');
@@ -8,6 +9,7 @@
 	//константа для логирования заказов
 	define('ORDER_LOG', 'orders.log');
 
+	$resultReg .= '';
 	$basket = array();
 	$count = 0;
 

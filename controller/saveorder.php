@@ -11,6 +11,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$dt = time();
 
 	$strOrder = "$name | $email | $phone | $address | $orderid | $dt\n";
+}else{
+	$user = clearData($_SESSION['user'], 'string');
+	if($userArray = selectInUsers($user)) {
+		foreach($userArray as $key => $value) {
+			$$key = $value;
+		}
+		$orderid = uniqid();
+		$strOrder = "$name | $email | $phone | $address | $orderid | $dt\n";
+	}
 }
 
 if($strOrder) {
