@@ -34,7 +34,7 @@
 ?>
 		<tr>
 			<td><?= $i++?></td>
-			<td><?= $item['title']?></td>
+			<td><a href="../controller/renderpage.php?id=<?=$item['id']?>"><?= $item['title']?></a></td>
 			<td><?= $item['genre']?></td>
 			<td><?= $item['country']?></td>
 			<td><?= $item['releaseyear']?></td>

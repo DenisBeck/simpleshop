@@ -1,15 +1,15 @@
 <?php
 /*\\\\\\\\\\\\\\\\Работа с базой данных////////////////*/
 //Добавление товара в базу данных
-function addToCatalog($title, $genre, $country, $releaseyear, $price, $storeQuantity) {
+function addToCatalog($title, $genre, $duration, $country, $releaseyear, $directedBy, $poster, $description, $price, $storeQuantity) {
 	global $link;
-	$sql = "INSERT INTO catalog (title, genre, country, releaseyear, price, `store quantity`) 
-			VALUES (?, ?, ?, ?, ?, ?)";
+	$sql = "INSERT INTO catalog (title, genre, duration, country, releaseyear, directedBy, poster, description, price, `store quantity`) 
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	$stmt = mysqli_prepare($link, $sql);
 	if(!$stmt) {
 		return false;
 	}
-	mysqli_stmt_bind_param($stmt, 'sssiii', $title, $genre, $country, $releaseyear, $price, $storeQuantity);
+	mysqli_stmt_bind_param($stmt, 'ssisisssii', $title, $genre, $duration, $country, $releaseyear, $directedBy, $poster, $description, $price, $storeQuantity);
 	mysqli_execute($stmt);
 	mysqli_stmt_close($stmt);
 	return true;
@@ -84,6 +84,19 @@ function selectInCatalog($title="") {
 	$title .= "%";
 	$sql = "SELECT id, title, genre, country, releaseyear, price, `store quantity`  
 			FROM catalog WHERE title LIKE '{$title}'";
+	$result = mysqli_query($link, $sql);
+	if(!$result)
+		return false;
+	$items = mysqli_fetch_all($result, MYSQLI_ASSOC);
+	mysqli_free_result($result);
+	return $items;
+}
+
+function selectDescriptionInCatalog($id, $title="") {
+	global $link;
+	$title .= "%";
+	$sql = "SELECT id, title, genre, duration, country, releaseyear, directedBy, poster, description  
+			FROM catalog WHERE id='{$id}'";
 	$result = mysqli_query($link, $sql);
 	if(!$result)
 		return false;
